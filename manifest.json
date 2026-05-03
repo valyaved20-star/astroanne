@@ -1,0 +1,22 @@
+{
+  "name": "AstroAnne",
+  "short_name": "AstroAnne",
+  "description": "Bebeğinizin Ay burcunu keşfedin",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E1650",
+  "theme_color": "#1E1650",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
