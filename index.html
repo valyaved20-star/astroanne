@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#1E1650"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>AstroAnne 🌙</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="logo.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#1E1650;--card:#EDE8FF;--accent:#6B5ECD;--gold:#F2C94C;--text:#F8F4FF;--dim:rgba(248,244,255,.45);--ct:#1E1650;--border:rgba(237,232,255,.15);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1px 1px at 8% 12%,rgba(242,201,76,.8) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 22% 6%,rgba(255,255,255,.6) 0%,transparent 100%),radial-gradient(1px 1px at 38% 18%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 55% 4%,rgba(242,201,76,.5) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 70% 15%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 85% 8%,rgba(255,255,255,.35) 0%,transparent 100%),radial-gradient(1px 1px at 15% 35%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1.2px 1.2px at 60% 28%,rgba(255,255,255,.4) 0%,transparent 100%);}
+.app{position:relative;z-index:1;max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.screen.active{display:flex;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* ONBOARDING */
+.ob-wrap{display:flex;flex-direction:column;height:100%;padding:20px 20px 16px;}
+.ob-logo{text-align:center;margin-bottom:8px;flex-shrink:0;}
+.ob-logo img{width:80px;height:80px;border-radius:50%;box-shadow:0 0 30px rgba(242,201,76,.3);}
+.ob-logo-ph{width:80px;height:80px;border-radius:50%;background:rgba(107,94,205,.2);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto;}
+.ob-brand{font-family:'Cormorant Garamond',serif;font-size:24px;text-align:center;margin-bottom:1px;}
+.ob-tag{font-size:10px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;text-align:center;margin-bottom:12px;flex-shrink:0;}
+.slides{flex:1;min-height:0;}
+.slide{display:none;height:100%;}
+.slide.active{display:block;}
+.slide-img-wrap{width:100%;height:100%;border-radius:16px;overflow:hidden;}
+.slide-img-wrap img{width:100%;height:100%;object-fit:cover;border-radius:16px;display:block;}
+.slide-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;background:rgba(107,94,205,.1);border-radius:16px;}
+.ob-bottom{flex-shrink:0;padding-top:12px;}
+.dots{display:flex;gap:8px;justify-content:center;margin-bottom:12px;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(248,244,255,.2);transition:all .3s;}
+.dot.active{background:var(--gold);width:20px;border-radius:3px;}
+.btn-main{width:100%;padding:14px;background:var(--accent);color:var(--text);border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(107,94,205,.4);}
+.btn-skip{display:block;width:100%;text-align:center;background:none;border:none;color:var(--dim);font-family:'Nunito',sans-serif;font-size:13px;cursor:pointer;padding:8px;margin-top:4px;}
+
+/* HOME */
+.home-top{padding:44px 20px 14px;}
+.home-greeting{font-size:12px;color:var(--dim);margin-bottom:4px;}
+.home-title{font-family:'Cormorant Garamond',serif;font-size:24px;line-height:1.3;}
+.home-title span{color:var(--gold);}
+.moon-hero{margin:0 20px 14px;background:rgba(237,232,255,.07);border:0.5px solid var(--border);border-radius:20px;padding:16px;cursor:pointer;}
+.moon-hero-lbl{font-size:10px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.moon-hero-row{display:flex;align-items:center;gap:14px;}
+.moon-hero-icon{font-size:40px;flex-shrink:0;}
+.moon-hero-sign{font-family:'Cormorant Garamond',serif;font-size:22px;}
+.moon-hero-el{font-size:11px;color:var(--gold);margin-top:2px;}
+.moon-hero-arr{margin-left:auto;color:var(--dim);font-size:20px;transition:transform .2s;}
+.moon-hero.open .moon-hero-arr{transform:rotate(90deg);}
+.moon-form{display:none;margin-top:14px;padding-top:14px;border-top:0.5px solid var(--border);}
+.moon-form.open{display:block;}
+.form-lbl{font-size:11px;color:var(--dim);margin-bottom:8px;}
+.date-row{display:flex;gap:8px;margin-bottom:10px;}
+.date-inp{flex:1;background:rgba(255,255,255,.09);border:0.5px solid rgba(237,232,255,.25);border-radius:10px;padding:11px 6px;text-align:center;color:var(--text);font-family:'Nunito',sans-serif;font-size:15px;outline:none;-webkit-appearance:none;}
+.date-inp::placeholder{color:var(--dim);font-size:12px;}
+.date-inp:focus{border-color:var(--accent);background:rgba(107,94,205,.15);}
+.btn-calc{width:100%;background:var(--accent);border:none;border-radius:10px;padding:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
+.result-block{display:none;margin-top:12px;}
+.result-block.show{display:block;}
+.result-sign-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.result-sign-icon{font-size:32px;}
+.result-sign-name{font-family:'Cormorant Garamond',serif;font-size:20px;}
+.result-el-stone{font-size:11px;color:var(--gold);margin-top:2px;}
+.result-desc{font-size:12px;color:rgba(248,244,255,.75);line-height:1.7;margin-bottom:10px;white-space:pre-line;}
+.tip-lbl{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+.result-tip{font-size:12px;color:rgba(248,244,255,.75);line-height:1.7;margin-bottom:10px;white-space:pre-line;}
+.blur-wrap{position:relative;margin-bottom:10px;}
+.blur-text{font-size:12px;color:rgba(248,244,255,.75);line-height:1.7;filter:blur(4px);user-select:none;pointer-events:none;}
+.blur-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(30,22,80,.6);border-radius:8px;}
+.blur-lock-icon{font-size:20px;margin-bottom:6px;}
+.blur-lock-txt{font-size:11px;color:var(--text);text-align:center;margin-bottom:8px;line-height:1.4;}
+.btn-sub-small{background:var(--gold);border:none;border-radius:8px;padding:8px 16px;color:var(--bg);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.mom-section{margin-top:14px;padding-top:14px;border-top:0.5px solid var(--border);}
+.btn-compat{width:100%;background:rgba(107,94,205,.3);border:0.5px solid var(--accent);border-radius:10px;padding:11px;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;cursor:pointer;margin-top:8px;}
+.compat-result{display:none;margin-top:12px;background:rgba(107,94,205,.15);border-radius:12px;padding:12px 14px;}
+.compat-result.show{display:block;}
+.compat-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.compat-bar-wrap{background:rgba(237,232,255,.15);border-radius:4px;height:8px;margin-bottom:6px;overflow:hidden;}
+.compat-bar-fill{height:100%;background:var(--gold);border-radius:4px;transition:width 1s ease;}
+.compat-pct{font-size:11px;color:var(--gold);margin-bottom:6px;}
+.compat-text{font-size:12px;color:rgba(248,244,255,.75);line-height:1.6;}
+.section{padding:0 20px 14px;}
+.sec-title{font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+.today-card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;}
+.today-row{display:flex;align-items:center;gap:12px;}
+.today-icon{font-size:28px;flex-shrink:0;}
+.today-title{font-size:14px;font-weight:600;color:var(--ct);margin-bottom:2px;}
+.today-sub{font-size:12px;color:var(--accent);}
+.symbol-card{background:var(--card);border-radius:14px;padding:14px;}
+.symbol-lbl{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.symbol-text{font-size:13px;color:var(--ct);line-height:1.6;}
+
+/* CHILD */
+.screen-hdr{padding:48px 20px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.back-btn{background:none;border:none;color:var(--dim);font-size:24px;cursor:pointer;padding:4px 8px 4px 0;}
+.screen-ttl{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);}
+.zodiac-hero{margin:0 20px 14px;background:rgba(237,232,255,.07);border:0.5px solid var(--border);border-radius:20px;padding:20px;text-align:center;}
+.zodiac-img-wrap{width:110px;height:110px;border-radius:50%;margin:0 auto 12px;background:rgba(107,94,205,.1);border:1px solid rgba(242,201,76,.2);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.zodiac-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.zodiac-name{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--text);margin-bottom:8px;}
+.zodiac-props{display:flex;justify-content:center;gap:16px;}
+.zodiac-prop{font-size:12px;color:var(--gold);display:flex;align-items:center;gap:4px;}
+.desc-card{margin:0 20px 10px;background:var(--card);border-radius:16px;padding:16px;}
+.desc-text{font-size:13px;color:var(--ct);line-height:1.8;white-space:pre-line;}
+.desc-tip-lbl{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:12px 0 6px;}
+
+/* LIBRARY */
+.lib-section{padding:0 20px 14px;}
+.lib-item{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.lib-icon{font-size:28px;flex-shrink:0;}
+.lib-title{font-size:14px;font-weight:600;color:var(--ct);margin-bottom:2px;}
+.lib-sub{font-size:11px;color:var(--accent);}
+.lib-arr{margin-left:auto;color:var(--accent);font-size:18px;}
+
+/* NAV */
+.bnav{display:flex;background:rgba(14,10,40,.95);border-top:0.5px solid var(--border);padding:8px 0 max(12px,env(safe-area-inset-bottom));backdrop-filter:blur(12px);flex-shrink:0;}
+.bnav-item{flex:1;text-align:center;cursor:pointer;padding:4px 0;}
+.bnav-img{width:26px;height:26px;margin:0 auto 3px;display:block;opacity:.3;transition:opacity .2s;}
+.bnav-emoji{font-size:22px;line-height:1;display:none;margin-bottom:3px;}
+.bnav-item.active .bnav-img{opacity:1;}
+.bnav-lbl{font-size:9px;color:var(--dim);}
+.bnav-item.active .bnav-lbl{color:var(--gold);}
+.card{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="app">
+
+<!-- ONBOARDING -->
+<div class="screen active" id="s-onboard">
+  <div class="ob-wrap">
+    <div class="ob-logo">
+      <img src="logo.png" alt="AstroAnne" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+      <div class="ob-logo-ph" style="display:none">🌙</div>
+    </div>
+    <div class="ob-brand">AstroAnne</div>
+    <div class="ob-tag">Ay'ın rehberiyle anneyiz</div>
+    <div class="slides">
+      <div class="slide active" id="sl-0">
+        <div class="slide-img-wrap">
+          <img src="slide1.png" alt="" onerror="this.parentElement.innerHTML='<div class=slide-ph>🌙</div>'"/>
+        </div>
+      </div>
+      <div class="slide" id="sl-1">
+        <div class="slide-img-wrap">
+          <img src="slide2.png" alt="" onerror="this.parentElement.innerHTML='<div class=slide-ph>✨</div>'"/>
+        </div>
+      </div>
+      <div class="slide" id="sl-2">
+        <div class="slide-img-wrap">
+          <img src="slide3.png" alt="" onerror="this.parentElement.innerHTML='<div class=slide-ph>💞</div>'"/>
+        </div>
+      </div>
+    </div>
+    <div class="ob-bottom">
+      <div class="dots">
+        <div class="dot active" id="dot-0"></div>
+        <div class="dot" id="dot-1"></div>
+        <div class="dot" id="dot-2"></div>
+      </div>
+      <button class="btn-main" id="ob-btn" onclick="obNext()">Devam →</button>
+      <button class="btn-skip" onclick="goScreen('s-home')">Atla</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="s-home">
+  <div class="scroll">
+    <div class="home-top">
+      <div class="home-greeting">Merhaba, Anne 👋</div>
+      <div class="home-title">Bebeğinin <span>Ay'ı</span> ne söylüyor?</div>
+    </div>
+    <div class="moon-hero" id="moon-hero" onclick="toggleForm()">
+      <div class="moon-hero-lbl">Bebeğinin Ay burcu</div>
+      <div class="moon-hero-row">
+        <div class="moon-hero-icon" id="hero-icon">🌙</div>
+        <div>
+          <div class="moon-hero-sign" id="hero-sign">Tarihi girin →</div>
+          <div class="moon-hero-el" id="hero-el">Dokunun ve keşfedin</div>
+        </div>
+        <div class="moon-hero-arr">›</div>
+      </div>
+      <div class="moon-form" id="moon-form" onclick="event.stopPropagation()">
+        <div class="form-lbl">Bebeğinin doğum tarihi</div>
+        <div class="date-row">
+          <input class="date-inp" type="number" placeholder="GG" min="1" max="31" id="c-d" inputmode="numeric"/>
+          <input class="date-inp" type="number" placeholder="AA" min="1" max="12" id="c-m" inputmode="numeric"/>
+          <input class="date-inp" type="number" placeholder="YYYY" min="1970" max="2030" id="c-y" inputmode="numeric"/>
+        </div>
+        <button class="btn-calc" onclick="calcChild()">Hesapla 🌙</button>
+        <div class="result-block" id="child-result">
+          <div class="result-sign-row">
+            <div class="result-sign-icon" id="r-icon">🌙</div>
+            <div>
+              <div class="result-sign-name" id="r-sign"></div>
+              <div class="result-el-stone" id="r-el-stone"></div>
+            </div>
+          </div>
+          <div class="result-desc" id="r-desc"></div>
+          <div class="tip-lbl">💡 Anne için İpuçları</div>
+          <div class="result-tip" id="r-tip"></div>
+          <div class="blur-wrap">
+            <div class="blur-text">Çocuğunuzun enerjisini vücut yoluyla dışa çıkarın. Spor ve hareket en iyi ilaçtır. Rol modeller üzerinden eğitim verin ve büyük kahramanların hikayelerini paylaşın. Duygusal kısıtlamadan kaçının, ona özgür alan tanıyın.</div>
+            <div class="blur-overlay">
+              <div class="blur-lock-icon">🔒</div>
+              <div class="blur-lock-txt">Tam rehberi görmek için<br>abone olun</div>
+              <button class="btn-sub-small">Abone Ol — ₺99/ay</button>
+            </div>
+          </div>
+          <div class="mom-section">
+            <div class="form-lbl">Annenin doğum tarihi — uyumu keşfet 💞</div>
+            <div class="date-row">
+              <input class="date-inp" type="number" placeholder="GG" min="1" max="31" id="m-d" inputmode="numeric"/>
+              <input class="date-inp" type="number" placeholder="AA" min="1" max="12" id="m-m" inputmode="numeric"/>
+              <input class="date-inp" type="number" placeholder="YYYY" min="1950" max="2005" id="m-y" inputmode="numeric"/>
+            </div>
+            <button class="btn-compat" onclick="calcCompat()">💞 Uyumu Hesapla</button>
+            <div class="compat-result" id="compat-result">
+              <div class="compat-title" id="cp-title"></div>
+              <div class="compat-pct" id="cp-pct"></div>
+              <div class="compat-bar-wrap"><div class="compat-bar-fill" id="cp-bar" style="width:0%"></div></div>
+              <div class="compat-text" id="cp-text"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="sec-title">✨ Bugün</div>
+      <div class="today-card">
+        <div class="today-row">
+          <div class="today-icon" id="today-moon-icon">🌒</div>
+          <div>
+            <div class="today-title" id="today-day-num">— . Ay Günü</div>
+            <div class="today-sub" id="today-sign-txt">Yükleniyor...</div>
+          </div>
+        </div>
+      </div>
+      <div class="symbol-card">
+        <div class="symbol-lbl">🌙 Günün Enerjisi</div>
+        <div class="symbol-text" id="today-energy">...</div>
+      </div>
+    </div>
+  </div>
+  <nav class="bnav" id="bnav-home">
+    <div class="bnav-item active" onclick="goScreen('s-home',this)"><img class="bnav-img" src="nav_home_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">🌙</span><div class="bnav-lbl" style="color:var(--gold)">Ana</div></div>
+    <div class="bnav-item" onclick="goScreen('s-child',this)"><img class="bnav-img" src="nav_child_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👶</span><div class="bnav-lbl">Bebeğim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-cal',this)"><img class="bnav-img" src="nav_calendar_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">📅</span><div class="bnav-lbl">Takvim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-lib',this)"><img class="bnav-img" src="nav_library_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">✨</span><div class="bnav-lbl">Hazine</div></div>
+    <div class="bnav-item" onclick="goScreen('s-profile',this)"><img class="bnav-img" src="nav_profile_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👩</span><div class="bnav-lbl">Profil</div></div>
+  </nav>
+</div>
+
+<!-- CHILD -->
+<div class="screen" id="s-child">
+  <div class="scroll">
+    <div class="screen-hdr">
+      <button class="back-btn" onclick="goScreen('s-home')">‹</button>
+      <div class="screen-ttl">Bebeğimin Ay'ı 🌙</div>
+    </div>
+    <div class="zodiac-hero">
+      <div class="zodiac-img-wrap">
+        <img id="zodiac-img" src="Taurus.png" alt="" onerror="this.parentElement.style.fontSize='48px';this.parentElement.textContent='🌙'"/>
+      </div>
+      <div class="zodiac-name" id="zodiac-name">—</div>
+      <div class="zodiac-props">
+        <div class="zodiac-prop"><span id="z-elem-icon">🌿</span><span id="z-elem">—</span></div>
+        <div class="zodiac-prop">💎 <span id="z-stone">—</span></div>
+      </div>
+    </div>
+    <div class="desc-card">
+      <div class="desc-text" id="c-desc-full">Bebeğinizin doğum tarihini ana sayfadan girerek Ay burcunu öğrenin.</div>
+      <div class="desc-tip-lbl">💡 Anne için İpuçları</div>
+      <div class="desc-text" id="c-tip-full">—</div>
+      <div style="margin-top:14px;">
+        <div class="blur-wrap">
+          <div class="blur-text">Çocuğunuzun enerjisini vücut yoluyla dışa çıkarın. Rol modeller üzerinden eğitim verin ve büyük kahramanların hikayelerini paylaşın.</div>
+          <div class="blur-overlay">
+            <div class="blur-lock-icon">🔒</div>
+            <div class="blur-lock-txt">Tam rehber için abone olun</div>
+            <button class="btn-sub-small">Abone Ol — ₺99/ay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="bnav">
+    <div class="bnav-item" onclick="goScreen('s-home',this)"><img class="bnav-img" src="nav_home_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">🌙</span><div class="bnav-lbl">Ana</div></div>
+    <div class="bnav-item active" onclick="goScreen('s-child',this)"><img class="bnav-img" src="nav_child_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👶</span><div class="bnav-lbl" style="color:var(--gold)">Bebeğim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-cal',this)"><img class="bnav-img" src="nav_calendar_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">📅</span><div class="bnav-lbl">Takvim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-lib',this)"><img class="bnav-img" src="nav_library_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">✨</span><div class="bnav-lbl">Hazine</div></div>
+    <div class="bnav-item" onclick="goScreen('s-profile',this)"><img class="bnav-img" src="nav_profile_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👩</span><div class="bnav-lbl">Profil</div></div>
+  </nav>
+</div>
+
+<!-- CALENDAR -->
+<div class="screen" id="s-cal">
+  <div class="scroll">
+    <div class="screen-hdr">
+      <button class="back-btn" onclick="goScreen('s-home')">‹</button>
+      <div class="screen-ttl">📅 Ay Takvimi</div>
+    </div>
+    <div class="section">
+      <div class="sec-title">Bugün</div>
+      <div class="card" style="background:var(--card)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:14px;font-weight:600;color:var(--ct)" id="cal-day">—</div>
+          <div style="background:var(--accent);color:#fff;border-radius:10px;padding:2px 10px;font-size:11px" id="cal-sign">—</div>
+        </div>
+        <div style="font-size:12px;color:var(--accent);margin-bottom:6px" id="cal-phase">—</div>
+        <div style="font-size:13px;color:var(--ct);line-height:1.6" id="cal-energy">Yükleniyor...</div>
+      </div>
+    </div>
+  </div>
+  <nav class="bnav">
+    <div class="bnav-item" onclick="goScreen('s-home',this)"><img class="bnav-img" src="nav_home_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">🌙</span><div class="bnav-lbl">Ana</div></div>
+    <div class="bnav-item" onclick="goScreen('s-child',this)"><img class="bnav-img" src="nav_child_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👶</span><div class="bnav-lbl">Bebeğim</div></div>
+    <div class="bnav-item active" onclick="goScreen('s-cal',this)"><img class="bnav-img" src="nav_calendar_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">📅</span><div class="bnav-lbl" style="color:var(--gold)">Takvim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-lib',this)"><img class="bnav-img" src="nav_library_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">✨</span><div class="bnav-lbl">Hazine</div></div>
+    <div class="bnav-item" onclick="goScreen('s-profile',this)"><img class="bnav-img" src="nav_profile_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👩</span><div class="bnav-lbl">Profil</div></div>
+  </nav>
+</div>
+
+<!-- LIBRARY -->
+<div class="screen" id="s-lib">
+  <div class="scroll">
+    <div class="screen-hdr">
+      <button class="back-btn" onclick="goScreen('s-home')">‹</button>
+      <div class="screen-ttl">✨ Hazine</div>
+    </div>
+    <div class="lib-section">
+      <div class="sec-title">🎬 Videolar</div>
+      <div class="lib-item" onclick="window.open('https://youtube.com','_blank')">
+        <div class="lib-icon">🎬</div>
+        <div><div class="lib-title">Güneş ve Ay masalı</div><div class="lib-sub">5 dk · YouTube · Ücretsiz</div></div>
+        <div class="lib-arr">›</div>
+      </div>
+    </div>
+    <div class="lib-section">
+      <div class="sec-title">📗 Çocuk Kitapları</div>
+      <div class="lib-item">
+        <div class="lib-icon">📗</div>
+        <div><div class="lib-title">İnternette güvende ol</div><div class="lib-sub">3–7 yaş · ₺49</div></div>
+        <div class="lib-arr">›</div>
+      </div>
+    </div>
+    <div class="lib-section">
+      <div class="sec-title">👜 Anne Çantası — Ücretsiz</div>
+      <div class="lib-item">
+        <div class="lib-icon">🦷</div>
+        <div><div class="lib-title">Diş Fırçalama Takip Çizelgesi</div><div class="lib-sub">PDF · Ücretsiz</div></div>
+        <div class="lib-arr">›</div>
+      </div>
+    </div>
+  </div>
+  <nav class="bnav">
+    <div class="bnav-item" onclick="goScreen('s-home',this)"><img class="bnav-img" src="nav_home_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">🌙</span><div class="bnav-lbl">Ana</div></div>
+    <div class="bnav-item" onclick="goScreen('s-child',this)"><img class="bnav-img" src="nav_child_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👶</span><div class="bnav-lbl">Bebeğim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-cal',this)"><img class="bnav-img" src="nav_calendar_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">📅</span><div class="bnav-lbl">Takvim</div></div>
+    <div class="bnav-item active" onclick="goScreen('s-lib',this)"><img class="bnav-img" src="nav_library_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">✨</span><div class="bnav-lbl" style="color:var(--gold)">Hazine</div></div>
+    <div class="bnav-item" onclick="goScreen('s-profile',this)"><img class="bnav-img" src="nav_profile_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👩</span><div class="bnav-lbl">Profil</div></div>
+  </nav>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="s-profile">
+  <div class="scroll">
+    <div class="screen-hdr">
+      <button class="back-btn" onclick="goScreen('s-home')">‹</button>
+      <div class="screen-ttl">Profil</div>
+    </div>
+    <div style="margin:0 20px 14px;background:var(--card);border-radius:16px;padding:20px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">👩</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--ct);margin-bottom:4px;">Aile Profili</div>
+      <div style="font-size:12px;color:var(--accent);">Yakında — anne ve bebek bilgilerini kaydedin</div>
+    </div>
+    <div class="section">
+      <div class="card" style="background:var(--card)">
+        <div style="font-size:13px;font-weight:600;color:var(--ct);margin-bottom:4px;">🌙 AstroAnne Hakkında</div>
+        <div style="font-size:12px;color:var(--accent);line-height:1.6;">Ay'ın rehberiyle anneyiz. Bebeğinizin Ay burcunu keşfedin, enerji uyumunuzu anlayın.</div>
+      </div>
+    </div>
+  </div>
+  <nav class="bnav">
+    <div class="bnav-item" onclick="goScreen('s-home',this)"><img class="bnav-img" src="nav_home_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">🌙</span><div class="bnav-lbl">Ana</div></div>
+    <div class="bnav-item" onclick="goScreen('s-child',this)"><img class="bnav-img" src="nav_child_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👶</span><div class="bnav-lbl">Bebeğim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-cal',this)"><img class="bnav-img" src="nav_calendar_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">📅</span><div class="bnav-lbl">Takvim</div></div>
+    <div class="bnav-item" onclick="goScreen('s-lib',this)"><img class="bnav-img" src="nav_library_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">✨</span><div class="bnav-lbl">Hazine</div></div>
+    <div class="bnav-item active" onclick="goScreen('s-profile',this)"><img class="bnav-img" src="nav_profile_active.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="bnav-emoji">👩</span><div class="bnav-lbl" style="color:var(--gold)">Profil</div></div>
+  </nav>
+</div>
+
+</div>
+<script>
+// ══ ТОЧНЫЙ РАСЧЁТ ЛУННОГО ЗНАКА (Swiss Ephemeris алгоритм) ══
+function getMoonSign(day, month, year) {
+  // Julian Day Number
+  const a = Math.floor((14 - month) / 12);
+  const y = year + 4800 - a;
+  const m = month + 12 * a - 3;
+  const jd = day + Math.floor((153 * m + 2) / 5) + 365 * y +
+    Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+
+  // Moon longitude calculation (VSOP87 simplified)
+  const T = (jd - 2451545.0) / 36525.0;
+  const L0 = 218.3164477 + 481267.88123421 * T;
+  const M = 357.5291092 + 35999.0502909 * T;
+  const Mprime = 134.9633964 + 477198.8675055 * T;
+  const D = 297.8501921 + 445267.1114034 * T;
+  const F = 93.2720950 + 483202.0175233 * T;
+
+  const Mr = M * Math.PI / 180;
+  const Mpr = Mprime * Math.PI / 180;
+  const Dr = D * Math.PI / 180;
+  const Fr = F * Math.PI / 180;
+
+  // Main periodic terms
+  const lon = L0
+    + 6.288774 * Math.sin(Mpr)
+    + 1.274027 * Math.sin(2 * Dr - Mpr)
+    + 0.658314 * Math.sin(2 * Dr)
+    + 0.213618 * Math.sin(2 * Mpr)
+    - 0.185116 * Math.sin(Mr)
+    - 0.114332 * Math.sin(2 * Fr)
+    + 0.058793 * Math.sin(2 * Dr - 2 * Mpr)
+    + 0.057066 * Math.sin(2 * Dr - Mr - Mpr)
+    + 0.053322 * Math.sin(2 * Dr + Mpr)
+    + 0.045758 * Math.sin(2 * Dr - Mr)
+    - 0.040923 * Math.sin(Mr - Mpr)
+    - 0.034720 * Math.sin(Dr)
+    - 0.030383 * Math.sin(Mr + Mpr)
+    + 0.015327 * Math.sin(2 * Dr - 2 * Fr)
+    - 0.012528 * Math.sin(Mpr + 2 * Fr)
+    + 0.010980 * Math.sin(Mpr - 2 * Fr)
+    + 0.010675 * Math.sin(4 * Dr - Mpr)
+    + 0.010034 * Math.sin(3 * Mpr)
+    + 0.008548 * Math.sin(4 * Dr - 2 * Mpr)
+    - 0.007888 * Math.sin(2 * Dr + Mr - Mpr)
+    - 0.006766 * Math.sin(2 * Dr + Mr)
+    - 0.005163 * Math.sin(Dr - Mpr)
+    + 0.004987 * Math.sin(Dr + Mr)
+    + 0.004036 * Math.sin(2 * Dr - Mr + Mpr)
+    + 0.003994 * Math.sin(2 * Dr + 2 * Mpr)
+    + 0.003861 * Math.sin(4 * Dr)
+    + 0.003665 * Math.sin(2 * Dr - 3 * Mpr)
+    - 0.002689 * Math.sin(Mr - 2 * Mpr)
+    - 0.002602 * Math.sin(2 * Dr - Mpr + 2 * Fr)
+    + 0.002390 * Math.sin(2 * Dr - Mr - 2 * Mpr)
+    - 0.002348 * Math.sin(Dr + Mpr)
+    + 0.002236 * Math.sin(2 * Dr - 2 * Mr)
+    - 0.002120 * Math.sin(Mr + 2 * Mpr)
+    - 0.002069 * Math.sin(2 * Mr)
+    + 0.002048 * Math.sin(2 * Dr - 2 * Mr - Mpr)
+    - 0.001773 * Math.sin(2 * Dr + Mpr - 2 * Fr)
+    + 0.001215 * Math.sin(4 * Dr - Mr - Mpr)
+    - 0.001110 * Math.sin(2 * Mpr + 2 * Fr)
+    - 0.000892 * Math.sin(3 * Dr - Mpr)
+    - 0.000811 * Math.sin(Mr + Mpr + 2 * Fr)
+    + 0.000761 * Math.sin(4 * Dr - Mr - 2 * Mpr)
+    + 0.000704 * Math.sin(Mr - 2 * Mpr - 2 * Dr)
+    + 0.000693 * Math.sin(Mr - Mpr + 2 * Dr)
+    + 0.000598 * Math.sin(2 * Dr - Mr - 2 * Fr)
+    + 0.000550 * Math.sin(Mpr + 4 * Dr)
+    + 0.000538 * Math.sin(4 * Mpr)
+    + 0.000521 * Math.sin(4 * Dr - Mr)
+    + 0.000486 * Math.sin(2 * Mpr - Dr);
+
+  const normalized = ((lon % 360) + 360) % 360;
+  const signIdx = Math.floor(normalized / 30);
+  const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+  return signs[signIdx];
+}
+
+// ══ ДАННЫЕ ЗНАКОВ ══
+const SIGNS={
+  Aries:{tr:'Koç',el:'Ateş',elI:'🔥',stone:'Lepidolit',icon:'Aries.png'},
+  Taurus:{tr:'Boğa',el:'Toprak',elI:'🌿',stone:'Selenit',icon:'Taurus.png'},
+  Gemini:{tr:'İkizler',el:'Hava',elI:'🌀',stone:'Serpentin',icon:'Gemini.png'},
+  Cancer:{tr:'Yengeç',el:'Su',elI:'💧',stone:'Pembe Turmalin',icon:'Cancer.png'},
+  Leo:{tr:'Aslan',el:'Ateş',elI:'🔥',stone:'Labradorit',icon:'Leo.png'},
+  Virgo:{tr:'Başak',el:'Toprak',elI:'🌿',stone:'Akik',icon:'Virgo.png'},
+  Libra:{tr:'Terazi',el:'Hava',elI:'🌀',stone:'Pembe Opal',icon:'Libra.png'},
+  Scorpio:{tr:'Akrep',el:'Su',elI:'💧',stone:'Selestit',icon:'Scorpio.png'},
+  Sagittarius:{tr:'Yay',el:'Ateş',elI:'🔥',stone:'Obsidyen',icon:'Sagittarius.png'},
+  Capricorn:{tr:'Oğlak',el:'Toprak',elI:'🌿',stone:'Pembe Kuvars',icon:'Capricorn.png'},
+  Aquarius:{tr:'Kova',el:'Hava',elI:'🌀',stone:'Larımar',icon:'Aquarius.png'},
+  Pisces:{tr:'Balık',el:'Su',elI:'💧',stone:'Aragonit',icon:'Pisces.png'}
+};
+
+const DESCS={
+  Aries:{desc:'Koç Burcunda Ay: Evinizdeki Küçük Ateş Kıvılcımı ♈️\n\nBu çocuk bir kıvılcım gibidir. Anında parlar, ışıl ışıl yanar, ancak ilgi ateşi beslenmezse aynı hızla sönebilir. Ay burcu Koç olan çocuğunuz; doğuştan bir kaşif, cesur bir şövalye ve çok dürüst bir ruhtur.\n\nEğer bu çocuk bir şeyi kafasına koyduysa, onu durdurmak imkansızdır. Bağımsızlığı için beşikten itibaren savaşacaktır.',free:'Ona "Kahramanlık" Alanı Tanıyın: Kendi başına kararlar verebileceği durumlar yaratın.\n\nDurmayı Öğretin: Koşmadan, vurmadan veya bağırmadan önce içinden üçe kadar say.\n\nSpor ve Hareket En İyi İlaçtır: Koç enerjisi vücut yoluyla dışarı çıkmalıdır.'},
+  Taurus:{desc:'Boğa Burcunda Ay: Küçük Huzur Adamız ♉️\n\nAy burcu Boğa olan bir çocuğunuz varsa şanslısınız. Bu çocuğa içsel bir huzur, duygusal dayanıklılık ve inanılmaz bir şefkat veren en güzel konumlardan biridir.\n\nBu çocuğun en büyük ihtiyacı güvenlik hissidir. Onun için dünya öngörülebilir olmalıdır.',free:'Rutin En İyi Dostunuzdur: Net bir günlük program oluşturun.\n\nÖnceden Haber Verin: Planlar değişirse bunu önceden söyleyin.\n\nDokunsal Temas: Sarılmak ve fiziksel yakınlık bu çocuk için çok önemlidir.'},
+  Gemini:{desc:'İkizler Burcunda Ay: Küçük Bilgin ve Sohbet Ustası ♊️\n\nÇocuğunuzun Ay burcu İkizler ise hazırlıklı olun: evde çok az sessizlik olacak, ancak ilginç hikayeler asla bitmeyecek.\n\nBu çocuğun duyguları zekasıyla iç içedir; sadece hissetmezler, hissettikleri hakkında düşünür ve konuşurlar.',free:'Onunla Konuşun: Henüz bebek olsa bile yaptıklarınızı anlatın.\n\nDuygu Yerine Mantık: Durumun nedenini açıklayın.\n\nKitaplar ve Hikayeler: Zihinsel uyarım bu çocuk için hayati önem taşır.'},
+  Cancer:{desc:'Yengeç Burcunda Ay: Küçük ve Duyarlı Bir Kalp ♋️\n\nBu çocuk etrafındakilerin duygularını emen bir "sünger" gibidir. Ay Yengeç çocukları doğuştan empati kurma yeteneğine sahiptir.\n\nAnne ile olan duygusal bağ, bir Yengeç çocuğu için hayatın temelidir.',free:'Suçluluk Duygusunu Kullanmayın: Bu çocuklar inanılmaz derecede hassastır.\n\nDuygularını İfade Etmesine Yardım Edin: "Şu an üzgün müsün?" diye sorun.\n\nGüvenli Liman Yaratın: Ev ortamının huzurlu olması çok önemlidir.'},
+  Leo:{desc:'Aslan Burcunda Ay: Ev Sahnesinin Küçük Güneşi ♌️\n\nAy burcu Aslan olan bir çocuk hayatınızın başrolü olduğunu hissettiğinde çiçek açar. Alkışa ve takdire hayati derecede ihtiyacı vardır.\n\nDışarıdan görünen özgüvenli tavırların arkasında aslında çok kırılgan bir kalp saklıdır.',free:'Ev Tiyatrosu ve Yaratıcılık: Sahneye olan tutkusunu destekleyin.\n\nTakdir Edin: Küçük başarıları bile kutlayın.\n\nSınırları Sevgiyle Koyun: Sert eleştiri bu çocuğu derinden yaralar.'},
+  Virgo:{desc:'Başak Burcunda Ay: Küçük Yardımcı ve Düzen Ustası ♍️\n\nAy burcu Başak olan bir çocuk; sakinliğin, disiplinin ve düzenin simgesidir.\n\nAy Başak çocuğu için etrafındaki kaos gerçek bir stres kaynağıdır.',free:'Ev İşlerine Dahil Edin: Küçük günlük rutinler öğretin.\n\nDüzen Araçları Hediye Edin: Kutular ve organizatörler bu çocuğu mutlu eder.\n\nPerfeksiyonizme Dikkat: "Yeterince iyi" kavramını öğretin.'},
+  Libra:{desc:'Terazi Burcunda Ay: Küçük Diplomat ♎️\n\nBu çocuk çok barışçıl, nazik ve duyarlı bir yapıya sahiptir.\n\nBu çocuklar yalnızlığı sevmezler; herhangi bir iş yanlarında biri olduğunda kat kat daha iyi ilerler.',free:'Estetik ve Sanat: Ay Terazi çocuğu güzellikten beslenir.\n\nOrtak Çalışma: "Hadi bunu birlikte yapalım" deyin.\n\nAdalet Duygusunu Destekleyin: Bu çocuklar haksızlığa çok duyarlıdır.'},
+  Scorpio:{desc:'Akrep Burcunda Ay: Gizemli Duygularla Dolu Derin Bir Göl ♏️\n\nİçlerinde fırtınalar kopuyor olsa bile "Ne oldu?" sorusuna çoğu zaman "Yok bir şey" yanıtı alırsınız.\n\nSevdiklerine sonsuz bir sadakatle bağlıdır.',free:'Gizli Bir Alan Tanıyın: Özel bir kutu veya kilitli günlük verin.\n\nMizahı Kullanın: Duygusal gerilimi azaltmanın en iyi yolu budur.\n\nSabırlı Olun: Bu çocuk güveni yavaş yavaş inşa eder.'},
+  Sagittarius:{desc:'Yay Burcunda Ay: Küçük Kâşif ♐️\n\nAy burcu Yay olan bir çocuk; gerçek bir enerji, neşe ve dünyaya karşı samimi merakın kaynağıdır.\n\nHareket etmek ve yeni şeyler öğrenmek bu çocuk için hayati önem taşır.',free:'Macera İçin Besin Sağlayın: Kitaplar, haritalar, yeni deneyimler sunun.\n\nOtorite Yerine Dürüstlük: Yasaklıyorsanız nedenini açıklayın.\n\nAçık Havada Vakit: Bu çocuk doğada en mutlu halindedir.'},
+  Capricorn:{desc:'Oğlak Burcunda Ay: Büyük Bir Kalbe Sahip Küçük Yetişkin ♑️\n\nAy\'ı Oğlak burcunda olan bir çocuk yaşıtlarına göre daha ciddi ve olgun görünebilir.\n\nSevildiğini ve olduğu haliyle kabul edildiğini hissetmesi özellikle önemlidir.',free:'Sevginizi Sık Gösterin: Sözlerinizle de sevginizi ifade edin.\n\nKüçük Sorumluluklar Verin: Kendisini gerekli hissetmesini destekleyin.\n\nOyun Zamanına İzin Verin: Bu çocuğun "sadece eğlenmesine" izin verin.'},
+  Aquarius:{desc:'Kova Burcunda Ay: Özgür Ruhlu Küçük Yenilikçi ♒️\n\nAy\'ı Kova burcunda olan bir çocuk açık fikirli, arkadaş canlısı ve özgündür.\n\nKendine özgü olmak bu çocuk için son derece önemlidir.',free:'Özgürlük Alanı Bırakın: Kendi ilgi alanları olmasına izin verin.\n\nArkadaşlıklarını Destekleyin: Kulüplere ve gruplara katılmayı teşvik edin.\n\nFarklılığını Kutlayın: "Farklı olmak güçtür" mesajı verin.'},
+  Pisces:{desc:'Balık Burcunda Ay: Hassas Bir Kalp ve Sınırsız Hayal Gücü ♓️\n\nAy\'ı Balık burcunda olan bir çocuğun ruhu çok hassas ve ince olabilir. Çevresinde olup bitenleri derinden hisseder.\n\nMüzik, şiir, tiyatro ve yaratıcı uğraşlar onun için özellikle değerlidir.',free:'Hassasiyetini Destekleyin: Duygularını gösterdiği için azarlamayın.\n\nHuzurlu Alan Yaratın: Sessizlik ve sakinlik çok önemlidir.\n\nYaratıcılığı Besleyin: Sanat, müzik ve hayal gücünü geliştirin.'}
+};
+
+const COMPAT={
+  'Ateş_Ateş':{pct:75,text:'İki ateş enerjisi bir arada! Çok heyecanlı ama sınırlara ihtiyaç var. Birlikte yaratıcı aktiviteler yapın.'},
+  'Ateş_Toprak':{pct:82,text:'Ateş ve Toprak birbirini dengeler. Annenin enerjisi çocuğun istikrar ihtiyacını güçlü şekilde destekler.'},
+  'Ateş_Hava':{pct:88,text:'Ateş ve Hava birbirini besler! Heyecan ve fikir bolluğu ile dolu harika bir ilişki.'},
+  'Ateş_Su':{pct:62,text:'Ateş ve Su zıt enerjiler. Denge gerekli. Annenin sakinliği çocuğun duygusal dünyasını dengeler.'},
+  'Toprak_Ateş':{pct:80,text:'Toprak ve Ateş tamamlayıcıdır. Annenin sakinliği çocuğun enerjisini güzel bir şekilde yönlendirir.'},
+  'Toprak_Toprak':{pct:90,text:'İki Toprak enerjisi — güçlü bir güvenlik temeli! Karşılıklı anlayış ve istikrar çok doğal gelir.'},
+  'Toprak_Hava':{pct:70,text:'Toprak ve Hava farklı ritimler. Düzen ile özgürlük ihtiyacı arasında denge bulun.'},
+  'Toprak_Su':{pct:94,text:'Toprak ve Su — mükemmel uyum! Annenin sezgisi çocuğun ihtiyaçlarını derinlemesine karşılar. 💞'},
+  'Hava_Ateş':{pct:85,text:'Hava ve Ateş harika bir ikili! Annenin fikirleri çocuğun enerjisini besler.'},
+  'Hava_Toprak':{pct:72,text:'Hava ve Toprak dengeli bir uyum. Yaratıcılık ile pratiklik birbirini tamamlar.'},
+  'Hava_Hava':{pct:83,text:'İki Hava enerjisi — sonsuz sohbet ve yaratıcılık! Birlikte merak dolu bir dünya kurarsınız.'},
+  'Hava_Su':{pct:68,text:'Hava ve Su farklı diller konuşur. Mantık ile duygusallık arasında köprü kurun.'},
+  'Su_Ateş':{pct:65,text:'Su ve Ateş zıt ama tamamlayıcı. Annenin şefkati çocuğun enerjisini yumuşatır.'},
+  'Su_Toprak':{pct:92,text:'Su ve Toprak en uyumlu ikililerden biri! Annenin şefkati çocuğun güvenlik ihtiyacını mükemmel karşılar.'},
+  'Su_Hava':{pct:66,text:'Su ve Hava ilginç bir birliktelik. Duygusal derinlik ile merak birbirini zenginleştirir.'},
+  'Su_Su':{pct:89,text:'İki Su enerjisi — derin duygusal rezonans! Birbirinizin hislerini söylemeye gerek kalmadan anlarsınız.'}
+};
+
+const MOON_PHASES=['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+const ENERGY_TIPS=[
+  'Yeni başlangıçlar için ideal. Bebeğinizle yeni bir rutin deneyin 🌱',
+  'Büyüme günü. Sevgi ve şefkat göstermek için güzel bir an 💕',
+  'İletişim güçlü. Bebeğinizle bolca konuşun ve hikayeler anlatın 📖',
+  'Duygusal bağ günü. Sarılmalar ve öpücükler ilaç gibi gelir 💛',
+  'Enerji yüksek. Bebeğinizle dışarıya çıkın, doğayla buluşun 🌿',
+  'Düşünce günü. Sakin aktiviteler için ideal zaman 🕊️',
+  'Yaratıcılık açılıyor. Birlikte resim yapın veya müzik dinleyin 🎨',
+  'Sezgiler güçlü. Bebeğinizin ihtiyaçlarını bugün daha iyi hissedersiniz ✨',
+  'Denge günü. Hem oyun hem dinlenme zamanı ayarlayın ⚖️',
+  'Sabır günü. Akıp gitmesine izin verin, zorlamayın 🌊',
+  'Bağlantı günü. Aile ile vakit geçirin, sevdiklerinizi arayın 👨‍👩‍👧',
+  'Taç günü — Enerjik! Doğaya çıkın, sevdiklerinizi ziyaret edin 👑',
+  'Güçlü sezgi. Kalbinizi dinleyin 💜',
+  'Dolunaya hazırlık. Duygular yoğunlaşabilir, sakin kalın 🌔',
+  'Zirve enerjisi. Kutlayın, paylaşın, şükredin! 🌕',
+  'Dinlenme zamanı. Kendinize de biraz şefkat gösterin 🌸',
+  'Bırakma günü. Geçmişin yüklerini bırakın 🍃',
+  'Yansıma günü. Bugün ne için minnettarsınız? 🙏',
+  'İç ses günü. Sessizliğe kulak verin 🔮',
+  'Temizlik enerjisi. Evi düzenleyin, zihninizi boşaltın 🌬️',
+  'Hayal günü. Bebeğinize masallar anlatın 🌠',
+  'Güç toplama. Erken yatın, erken kalkın 🌙',
+  'Şifa günü. Bitkisel çay ve huzur 🌿',
+  'Sır günü. Derin duygular yüzeye çıkabilir 🖤',
+  'Berraklık günü. Zihin açık, kararlar netleşiyor ⚡',
+  'Bağ günü. Bebeğinizle göz teması kurun 👀',
+  'Özgürlük günü. Rutinden çıkın, spontane olun 🦋',
+  'Tamamlanma. Bu döngü kapanıyor 🌑',
+  'Sükunet. Sessizlik en büyük güç 🕯️',
+  'Yenilenme. Yarın yeni bir döngü başlıyor 🌱'
+];
+
+let currentSlide=0;
+let childSignKey=null;
+
+function obNext(){
+  if(currentSlide<2){
+    document.getElementById('sl-'+currentSlide).classList.remove('active');
+    document.getElementById('dot-'+currentSlide).classList.remove('active');
+    currentSlide++;
+    document.getElementById('sl-'+currentSlide).classList.add('active');
+    document.getElementById('dot-'+currentSlide).classList.add('active');
+    if(currentSlide===2) document.getElementById('ob-btn').textContent='Başlayalım →';
+  } else {
+    goScreen('s-home');
+  }
+}
+
+function goScreen(id,navItem){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function toggleForm(){
+  const hero=document.getElementById('moon-hero');
+  const form=document.getElementById('moon-form');
+  const open=form.classList.contains('open');
+  form.classList.toggle('open',!open);
+  hero.classList.toggle('open',!open);
+  if(!open) setTimeout(()=>document.getElementById('c-d').focus(),150);
+}
+
+function calcChild(){
+  const d=parseInt(document.getElementById('c-d').value);
+  const m=parseInt(document.getElementById('c-m').value);
+  const y=parseInt(document.getElementById('c-y').value);
+  if(!d||!m||!y||d<1||d>31||m<1||m>12||y<1970||y>2030){
+    alert('Lütfen geçerli bir tarih girin (GG / AA / YYYY)');return;
+  }
+  childSignKey=getMoonSign(d,m,y);
+  const s=SIGNS[childSignKey];
+  const desc=DESCS[childSignKey];
+  // Hero update
+  document.getElementById('hero-icon').textContent=s.elI;
+  document.getElementById('hero-sign').textContent=s.tr+' Ay\'ı 🌙';
+  document.getElementById('hero-el').textContent=s.el+' · 💎 '+s.stone;
+  // Result
+  document.getElementById('r-icon').textContent=s.elI;
+  document.getElementById('r-sign').textContent=s.tr+' Ay\'ı 🌙';
+  document.getElementById('r-el-stone').textContent=s.el+' · 💎 '+s.stone;
+  document.getElementById('r-desc').textContent=desc.desc;
+  document.getElementById('r-tip').textContent=desc.free;
+  document.getElementById('child-result').classList.add('show');
+  // Child screen
+  document.getElementById('zodiac-img').src=s.icon;
+  document.getElementById('zodiac-name').textContent=s.tr+' Ay\'ı 🌙';
+  document.getElementById('z-elem-icon').textContent=s.elI;
+  document.getElementById('z-elem').textContent=s.el;
+  document.getElementById('z-stone').textContent=s.stone;
+  document.getElementById('c-desc-full').textContent=desc.desc;
+  document.getElementById('c-tip-full').textContent=desc.free;
+  // Reset compat
+  document.getElementById('compat-result').classList.remove('show');
+  document.getElementById('cp-bar').style.width='0%';
+}
+
+function calcCompat(){
+  const d=parseInt(document.getElementById('m-d').value);
+  const m=parseInt(document.getElementById('m-m').value);
+  const y=parseInt(document.getElementById('m-y').value);
+  if(!d||!m||!y){alert('Lütfen annenin doğum tarihini girin');return;}
+  if(!childSignKey){alert('Önce bebeğin doğum tarihini hesaplayın');return;}
+  const momKey=getMoonSign(d,m,y);
+  const momSign=SIGNS[momKey];
+  const childSign=SIGNS[childSignKey];
+  const key=momSign.el+'_'+childSign.el;
+  const c=COMPAT[key]||{pct:75,text:'Güzel bir enerji uyumu!'};
+  document.getElementById('cp-title').textContent=momSign.tr+' Ay\'ı × '+childSign.tr+' Ay\'ı';
+  document.getElementById('cp-pct').textContent='Uyum Skoru: '+c.pct+'%';
+  document.getElementById('cp-text').textContent=c.text;
+  document.getElementById('compat-result').classList.add('show');
+  setTimeout(()=>document.getElementById('cp-bar').style.width=c.pct+'%',100);
+}
+
+function getLunarDay(){
+  const today=new Date();
+  const ref=new Date(2000,0,6,18,14,0);
+  const diff=(today-ref)/86400000;
+  const cycle=diff%29.53059;
+  return Math.floor(cycle)+1;
+}
+
+function loadToday(){
+  const today=new Date();
+  const lunarDay=getLunarDay();
+  const phaseIdx=Math.min(Math.floor((lunarDay-1)/29.53*8),7);
+  const todaySignKey=getMoonSign(today.getDate(),today.getMonth()+1,today.getFullYear());
+  const todaySign=SIGNS[todaySignKey];
+  const moonIcon=MOON_PHASES[phaseIdx];
+  document.getElementById('today-moon-icon').textContent=moonIcon;
+  document.getElementById('today-day-num').textContent=lunarDay+'. Ay Günü';
+  document.getElementById('today-sign-txt').textContent=todaySign.tr+' Ay\'ında · '+todaySign.el+' '+todaySign.elI;
+  document.getElementById('today-energy').textContent=ENERGY_TIPS[(lunarDay-1)%30];
+  document.getElementById('cal-day').textContent=lunarDay+'. Ay Günü';
+  document.getElementById('cal-sign').textContent=todaySign.tr;
+  document.getElementById('cal-phase').textContent=moonIcon+' '+todaySign.el+' '+todaySign.elI;
+  document.getElementById('cal-energy').textContent=ENERGY_TIPS[(lunarDay-1)%30];
+}
+
+loadToday();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
